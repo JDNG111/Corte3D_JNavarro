@@ -3,539 +3,347 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>¡Feliz Cumpleaños, Futuro Ingeniero!</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"></script>
+    <title>Matriz DOFA - Platec Colombia</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap');
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #004d98 0%, #a50044 50%, #004d98 100%);
-            background-size: 400% 400%;
-            animation: gradientShift 8s ease infinite;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            overflow-x: hidden;
         }
-
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .confetti {
-            position: fixed;
-            top: -10px;
-            left: 50%;
-            width: 10px;
-            height: 10px;
-            background: #ffeb3b;
-            animation: confetti-fall 3s linear infinite;
-            z-index: 1000;
-        }
-
-        @keyframes confetti-fall {
-            0% {
-                transform: translateY(-100vh) rotate(0deg);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(100vh) rotate(360deg);
-                opacity: 0;
-            }
-        }
-
-        .hero-section {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .barca-shield {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 200px;
-            height: 200px;
-            background: linear-gradient(45deg, #a50044, #004d98);
-            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-            opacity: 0.1;
-            z-index: 1;
-        }
-
-        .main-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 30px;
-            padding: 3rem;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
-            text-align: center;
-            max-width: 600px;
-            width: 90%;
-            position: relative;
-            z-index: 10;
-            border: 3px solid transparent;
-            background-clip: padding-box;
-        }
-
-        .main-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(45deg, #a50044, #004d98, #ffeb3b);
-            border-radius: 30px;
-            z-index: -1;
-            margin: -3px;
-        }
-
-        .birthday-title {
-            font-size: 3.5rem;
-            font-weight: 900;
-            background: linear-gradient(45deg, #a50044, #004d98);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 1rem;
-            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .subtitle {
-            font-size: 1.8rem;
-            color: #333;
-            margin-bottom: 2rem;
-            font-weight: 600;
-        }
-
-        .barca-badge {
-            width: 120px;
-            height: 120px;
-            background: linear-gradient(45deg, #a50044, #004d98);
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            color: white;
-            margin: 2rem 0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .barca-badge::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            animation: shine 2s linear infinite;
-        }
-
-        @keyframes shine {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .message-container {
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
             border-radius: 20px;
-            padding: 2rem;
-            margin: 2rem 0;
-            border-left: 5px solid #a50044;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
         }
-
-        .message-text {
-            font-size: 1.2rem;
-            line-height: 1.6;
-            color: #333;
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
         }
-
-        .achievements {
-            display: flex;
-            justify-content: space-around;
-            margin: 2rem 0;
-            flex-wrap: wrap;
+        
+        .title {
+            color: #2c3e50;
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
         }
-
-        .achievement-badge {
-            background: linear-gradient(45deg, #28a745, #20c997);
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 25px;
-            margin: 0.5rem;
-            font-weight: 600;
-            transform: scale(0);
-            animation: popIn 0.5s ease-out forwards;
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 18px;
+            font-weight: 500;
         }
-
-        .achievement-badge:nth-child(1) { animation-delay: 0.5s; }
-        .achievement-badge:nth-child(2) { animation-delay: 1s; }
-        .achievement-badge:nth-child(3) { animation-delay: 1.5s; }
-
-        @keyframes popIn {
-            0% { transform: scale(0) rotate(180deg); }
-            100% { transform: scale(1) rotate(0deg); }
+        
+        .dofa-matrix {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-top: 30px;
         }
-
-        .celebration-btn {
-            background: linear-gradient(45deg, #a50044, #004d98);
-            color: white;
-            border: none;
-            padding: 1rem 2rem;
-            font-size: 1.3rem;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin: 1rem;
+        
+        .dofa-section {
+            border-radius: 15px;
+            padding: 25px;
             position: relative;
             overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
         }
-
-        .celebration-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(165, 0, 68, 0.4);
+        
+        .dofa-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.15);
         }
-
-        .celebration-btn::after {
+        
+        .fortalezas {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+        }
+        
+        .oportunidades {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+        
+        .debilidades {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+        
+        .amenazas {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+        }
+        
+        .section-title {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+        }
+        
+        .section-title::after {
             content: '';
             position: absolute;
-            top: 50%;
+            bottom: -8px;
             left: 50%;
-            width: 0;
-            height: 0;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: rgba(255,255,255,0.8);
+            border-radius: 2px;
         }
-
-        .celebration-btn:active::after {
-            width: 300px;
-            height: 300px;
+        
+        .items-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
         }
-
-        .floating-icons {
-            position: fixed;
-            font-size: 2rem;
-            color: rgba(255, 255, 255, 0.7);
-            animation: float 6s ease-in-out infinite;
-            z-index: 5;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-
-        .code-snippet {
-            background: #2d3748;
-            color: #a0aec0;
-            padding: 1rem;
+        
+        .item {
+            background: rgba(255,255,255,0.15);
+            margin-bottom: 12px;
+            padding: 15px;
             border-radius: 10px;
-            font-family: 'Courier New', monospace;
-            margin: 1rem 0;
-            text-align: left;
-            font-size: 0.9rem;
+            border-left: 4px solid rgba(255,255,255,0.8);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
         }
-
-        .code-snippet .keyword { color: #63b3ed; }
-        .code-snippet .string { color: #68d391; }
-        .code-snippet .comment { color: #718096; }
-
-        .fireworks {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1000;
+        
+        .item:hover {
+            background: rgba(255,255,255,0.25);
+            transform: translateX(5px);
         }
-
-        .firework {
+        
+        .item-code {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 5px;
+            opacity: 0.9;
+        }
+        
+        .item-text {
+            font-size: 15px;
+            line-height: 1.4;
+        }
+        
+        .icon {
             position: absolute;
-            width: 4px;
-            height: 4px;
-            background: #ffeb3b;
-            border-radius: 50%;
-            animation: explode 1s ease-out forwards;
+            top: 20px;
+            right: 20px;
+            font-size: 40px;
+            opacity: 0.3;
         }
-
-        @keyframes explode {
-            0% {
-                opacity: 1;
-                transform: scale(0);
-            }
-            100% {
+        
+        @keyframes fadeInUp {
+            from {
                 opacity: 0;
-                transform: scale(20);
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
-
-        .cake-animation {
-            font-size: 4rem;
-            animation: bounce 2s ease-in-out infinite;
+        
+        .dofa-section {
+            animation: fadeInUp 0.6s ease forwards;
         }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
+        
+        .dofa-section:nth-child(1) { animation-delay: 0.1s; }
+        .dofa-section:nth-child(2) { animation-delay: 0.2s; }
+        .dofa-section:nth-child(3) { animation-delay: 0.3s; }
+        .dofa-section:nth-child(4) { animation-delay: 0.4s; }
+        
         @media (max-width: 768px) {
-            .birthday-title { font-size: 2.5rem; }
-            .subtitle { font-size: 1.4rem; }
-            .main-card { padding: 2rem; }
-            .achievements { flex-direction: column; align-items: center; }
+            .container { 
+                padding: 25px;
+                margin: 10px;
+            }
+            .title { font-size: 24px; }
+            .dofa-matrix { 
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .section-title { font-size: 20px; }
+            .item { padding: 12px; }
+        }
+        
+        .legend {
+            margin-top: 30px;
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 5px solid #3498db;
+        }
+        
+        .legend-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .legend-text {
+            color: #7f8c8d;
+            font-size: 14px;
+            line-height: 1.6;
         }
     </style>
 </head>
 <body>
-    <div class="fireworks" id="fireworks"></div>
-    
-    <!-- Floating Icons -->
-    <div class="floating-icons" style="top: 10%; left: 10%;"><i class="fas fa-futbol"></i></div>
-    <div class="floating-icons" style="top: 20%; right: 15%; animation-delay: -2s;"><i class="fas fa-laptop-code"></i></div>
-    <div class="floating-icons" style="bottom: 30%; left: 20%; animation-delay: -4s;"><i class="fas fa-graduation-cap"></i></div>
-    <div class="floating-icons" style="bottom: 10%; right: 10%; animation-delay: -3s;"><i class="fas fa-trophy"></i></div>
-    
-    <div class="hero-section">
-        <div class="barca-shield"></div>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">Matriz DOFA</h1>
+            <p class="subtitle">Platec Colombia - Plataforma Tecnológica</p>
+        </div>
         
-        <div class="main-card">
-            <div class="cake-animation">🎂</div>
-            <h1 class="birthday-title">¡FELIZ CUMPLEAÑOS!</h1>
-            <p class="subtitle">Al futuro ingeniero más culé del mundo</p>
-            
-            <div class="barca-badge">
-                <i class="fas fa-futbol"></i>
+        <div class="dofa-matrix">
+            <!-- FORTALEZAS -->
+            <div class="dofa-section fortalezas">
+                <div class="icon">💪</div>
+                <h2 class="section-title">Fortalezas</h2>
+                <ul class="items-list">
+                    <li class="item">
+                        <div class="item-code">F1</div>
+                        <div class="item-text">Más de 15 años de experiencia en el mercado colombiano</div>
+                    </li>
+                    <li class="item">
+                        <div class="item-code">F2</div>
+                        <div class="item-text">Desarrollo de software propio y especializado</div>
+                    </li>
+                    <li class="item">
+                        <div class="item-code">F3</div>
+                        <div class="item-text">Conocimiento profundo del mercado local</div>
+                    </li>
+                    <li class="item">
+                        <div class="item-code">F4</div>
+                        <div class="item-text">Soluciones integrales (hardware + software)</div>
+                    </li>
+                    <li class="item">
+                        <div class="item-code">F5</div>
+                        <div class="item-text">Capacidad de innovación y adaptación tecnológica</div>
+                    </li>
+                    <li class="item">
+                        <div class="item-code">F6</div>
+                        <div class="item-text">Experiencia en automatización industrial</div>
+                    </li>
+                </ul>
             </div>
             
-            <div class="message-container">
-                <p class="message-text">
-                    <strong>¡Hoy celebramos a alguien muy especial!</strong><br><br>
-                    No solo eres mi compañero de tesis y de estudios, sino también un gran amigo que comparte la pasión por el Barcelona y la ingeniería. 
-                    <br><br>
-                    Que este nuevo año te traiga muchos éxitos, que terminemos nuestra tesis con la misma pasión que el Barça juega en el Camp Nou, 
-                    y que pronto celebremos juntos nuestra graduación. 
-                    <br><br>
-                    <em>¡Visca el Barça y que cumplas muchos más! 🔵🔴</em>
-                </p>
+            <!-- OPORTUNIDADES -->
+            <div class="dofa-section oportunidades">
+                <div class="icon">🚀</div>
+                <h2 class="section-title">Oportunidades</h2>
+                <ul class="items-list">
+                    <li class="item">
+                        <div class="item-code">O1</div>
+                        <div class="item-text">Creciente demanda de automatización post-COVID-19</div>
+                    </li>
+                    <li class="item">
+                        <div class="item-code">O2</div>
+                        <div class="item-text">Políticas gubernamentales favorables a la transformación digital</div>
+                    </li>
+                    <li class="item">
+                        <div class="item-code">O3</div>
+                        <div class="item-text">Expansión a mercados latinoamericanos</div>
+                    </li>
+                    <li class="item">
+                        <div class="item-code">O4</div>
+                        <div class="item-text">Alianzas estratégicas con empresas internacionales</div>
+                    </li>
+                    <li class="item">
+                        <div class="item-code">O5</div>
+                        <div class="item-text">Crecimiento del sector industrial en Colombia</div>
+                    </li>
+                    <li class="item">
+                        <div class="item-code">O6</div>
+                        <div class="item-text">Demanda de trazabilidad en sectores regulados</div>
+                    </li>
+                </ul>
             </div>
             
-            <div class="achievements">
-                <span class="achievement-badge">
-                    <i class="fas fa-code"></i> Ingeniero en proceso
-                </span>
-                <span class="achievement-badge">
-                    <i class="fas fa-futbol"></i> Culé de corazón
-                </span>
-                <span class="achievement-badge">
-                    <i class="fas fa-handshake"></i> Compañero de tesis
-                </span>
+            <!-- DEBILIDADES -->
+            <div class="dofa-section debilidades">
+                <div class="icon">⚠️</div>
+                <h2 class="section-title">Debilidades</h2>
+                <ul class="items-list">
+                    <li class="item">
+                        <div class="item-code">D1</div>
+                        <div class="item-text">Dependencia del mercado nacional (limitada expansión internacional)</div>
+                    </li>
+                    <li class="item">
+                        <div class="item-code">D2</div>
+                        <div class="item-text">Recursos limitados para competir con multinacionales</div>
+                    </li>
+                    <li class="item">
+                        <div class="item-code">D3</div>
+                        <div class="item-text">Posible falta de certificaciones internacionales</div>
+                    </li>
+                    <li class="item">
+                        <div class="item-code">D4</div>
+                        <div class="item-text">Capacidad de producción limitada para grandes proyectos</div>
+                    </li>
+                    <li class="item">
+                        <div class="item-code">D5</div>
+                        <div class="item-text">Dependencia de proveedores internacionales de hardware</div>
+                    </li>
+                </ul>
             </div>
             
-            <div class="code-snippet">
-                <span class="keyword">class</span> <span class="string">CumpleañeroEspecial</span> {<br>
-                &nbsp;&nbsp;<span class="keyword">constructor</span>() {<br>
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">this</span>.equipo = <span class="string">'FC Barcelona'</span>;<br>
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">this</span>.carrera = <span class="string">'Ingeniería de Sistemas'</span>;<br>
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">this</span>.estado = <span class="string">'Próximo a graduarse'</span>;<br>
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">this</span>.amistad = <span class="string">'Invaluable'</span>;<br>
-                &nbsp;&nbsp;}<br>
-                &nbsp;&nbsp;<span class="comment">// ¡Que tengas un día increíble!</span><br>
-                }
+            <!-- AMENAZAS -->
+            <div class="dofa-section amenazas">
+                <div class="icon">⚡</div>
+                <h2 class="section-title">Amenazas</h2>
+                <ul class="items-list">
+                    <li class="item">
+                        <div class="item-code">A1</div>
+                        <div class="item-text">Competencia de empresas multinacionales con mayor capital</div>
+                    </li>
+                    <li class="item">
+                        <div class="item-code">A2</div>
+                        <div class="item-text">Rápida obsolescencia tecnológica</div>
+                    </li>
+                    <li class="item">
+                        <div class="item-code">A3</div>
+                        <div class="item-text">Dependencia económica del país (recesiones, devaluación)</div>
+                    </li>
+                    <li class="item">
+                        <div class="item-code">A4</div>
+                        <div class="item-text">Cambios regulatorios en el sector TIC</div>
+                    </li>
+                    <li class="item">
+                        <div class="item-code">A5</div>
+                        <div class="item-text">Piratería y ciberseguridad</div>
+                    </li>
+                    <li class="item">
+                        <div class="item-code">A6</div>
+                        <div class="item-text">Escasez de talento especializado en TIC</div>
+                    </li>
+                </ul>
             </div>
-            
-            <button class="celebration-btn" onclick="celebrate()">
-                <i class="fas fa-party-horn"></i> ¡CELEBRAR!
-            </button>
-            
-            <button class="celebration-btn" onclick="playAnthem()">
-                <i class="fas fa-music"></i> Himno del Barça
-            </button>
+        </div>
+        
+        <div class="legend">
+            <div class="legend-title">🎯 Estrategias DOFA Recomendadas</div>
+            <div class="legend-text">
+                <strong>FO:</strong> Aprovechar experiencia local + crecimiento digital = Expansión regional<br>
+                <strong>FA:</strong> Usar innovación + conocimiento local = Diferenciación ante multinacionales<br>
+                <strong>DO:</strong> Certificaciones internacionales + alianzas = Mayor competitividad<br>
+                <strong>DA:</strong> Diversificación de mercados + fortalecimiento financiero = Reducción de riesgos
+            </div>
         </div>
     </div>
-
-    <script>
-        // Inicializar animaciones cuando carga la página
-        window.addEventListener('load', function() {
-            initAnimations();
-            createConfetti();
-        });
-
-        function initAnimations() {
-            // Animar la tarjeta principal
-            gsap.from('.main-card', {
-                duration: 1.5,
-                y: 100,
-                opacity: 0,
-                scale: 0.8,
-                ease: 'back.out(1.7)'
-            });
-
-            // Animar el título
-            gsap.from('.birthday-title', {
-                duration: 2,
-                y: -50,
-                opacity: 0,
-                delay: 0.5,
-                ease: 'bounce.out'
-            });
-
-            // Animar el badge del Barça
-            gsap.from('.barca-badge', {
-                duration: 2,
-                rotation: 360,
-                scale: 0,
-                delay: 1,
-                ease: 'elastic.out(1, 0.3)'
-            });
-
-            // Animar los iconos flotantes
-            gsap.from('.floating-icons', {
-                duration: 2,
-                scale: 0,
-                rotation: 180,
-                stagger: 0.2,
-                delay: 1.5,
-                ease: 'back.out(1.7)'
-            });
-
-            // Efecto de escritura en el mensaje
-            gsap.to('.message-text', {
-                duration: 3,
-                delay: 2,
-                text: {
-                    value: "¡Hoy celebramos a alguien muy especial!\n\nNo solo eres mi compañero de tesis y de estudios, sino también un gran amigo que comparte la pasión por el Barcelona y la ingeniería.\n\nQue este nuevo año te traiga muchos éxitos, que terminemos nuestra tesis con la misma pasión que el Barça juega en el Camp Nou, y que pronto celebremos juntos nuestra graduación.\n\n¡Visca el Barça y que cumplas muchos más! 🔵🔴",
-                    delimiter: ""
-                },
-                ease: "none"
-            });
-        }
-
-        function celebrate() {
-            // Crear fuegos artificiales
-            createFireworks();
-            
-            // Animar el botón
-            gsap.to('.celebration-btn', {
-                duration: 0.1,
-                scale: 0.95,
-                yoyo: true,
-                repeat: 1
-            });
-
-            // Crear más confetti
-            for (let i = 0; i < 50; i++) {
-                createConfetti();
-            }
-
-            // Mostrar mensaje especial
-            setTimeout(() => {
-                alert('¡Que tengas un día increíble, futuro ingeniero! 🎉\n\n¡Visca el Barça! 🔵🔴');
-            }, 500);
-        }
-
-        function createFireworks() {
-            const fireworksContainer = document.getElementById('fireworks');
-            
-            for (let i = 0; i < 20; i++) {
-                const firework = document.createElement('div');
-                firework.className = 'firework';
-                firework.style.left = Math.random() * 100 + '%';
-                firework.style.top = Math.random() * 100 + '%';
-                firework.style.background = getRandomColor();
-                firework.style.animationDelay = Math.random() * 0.5 + 's';
-                
-                fireworksContainer.appendChild(firework);
-                
-                setTimeout(() => {
-                    firework.remove();
-                }, 1000);
-            }
-        }
-
-        function createConfetti() {
-            const colors = ['#a50044', '#004d98', '#ffeb3b', '#28a745', '#dc3545'];
-            
-            for (let i = 0; i < 10; i++) {
-                const confetti = document.createElement('div');
-                confetti.className = 'confetti';
-                confetti.style.left = Math.random() * 100 + '%';
-                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                confetti.style.animationDelay = Math.random() * 3 + 's';
-                confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
-                
-                document.body.appendChild(confetti);
-                
-                setTimeout(() => {
-                    confetti.remove();
-                }, 5000);
-            }
-        }
-
-        function getRandomColor() {
-            const colors = ['#a50044', '#004d98', '#ffeb3b', '#28a745', '#dc3545', '#6f42c1'];
-            return colors[Math.floor(Math.random() * colors.length)];
-        }
-
-        function playAnthem() {
-            // Simular reproducción del himno
-            const anthem = "🎵 Tot el camp és un clam, som la gent blaugrana... 🎵";
-            
-            gsap.to('.barca-badge', {
-                duration: 0.5,
-                scale: 1.2,
-                yoyo: true,
-                repeat: 3,
-                ease: 'power2.inOut'
-            });
-
-            alert('🎵 "El Cant del Barça" 🎵\n\n' + anthem + '\n\n¡Visca el Barça! 🔵🔴');
-        }
-
-        // Efecto de parallax suave
-        window.addEventListener('mousemove', function(e) {
-            const mouseX = e.clientX / window.innerWidth;
-            const mouseY = e.clientY / window.innerHeight;
-            
-            gsap.to('.barca-shield', {
-                duration: 2,
-                x: mouseX * 50,
-                y: mouseY * 50,
-                ease: 'power2.out'
-            });
-        });
-
-        // Animación continua de los iconos flotantes
-        setInterval(() => {
-            gsap.to('.floating-icons', {
-                duration: 2,
-                y: '+=20',
-                yoyo: true,
-                repeat: 1,
-                ease: 'sine.inOut',
-                stagger: 0.2
-            });
-        }, 4000);
-    </script>
 </body>
 </html>
