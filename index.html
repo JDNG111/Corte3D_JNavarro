@@ -3,347 +3,496 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Matriz DOFA - Platec Colombia</title>
+    <title>Generador de Informe</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
+        * {
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            padding: 20px;
         }
-        
+
         .container {
             max-width: 1400px;
             margin: 0 auto;
             background: white;
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        
-        .title {
-            color: #2c3e50;
-            font-size: 32px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-        }
-        
-        .subtitle {
-            color: #7f8c8d;
-            font-size: 18px;
-            font-weight: 500;
-        }
-        
-        .dofa-matrix {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 25px;
-            margin-top: 30px;
-        }
-        
-        .dofa-section {
             border-radius: 15px;
-            padding: 25px;
-            position: relative;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             overflow: hidden;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
         }
-        
-        .dofa-section:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 35px rgba(0,0,0,0.15);
-        }
-        
-        .fortalezas {
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-        }
-        
-        .oportunidades {
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            color: white;
-        }
-        
-        .debilidades {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-            color: white;
-        }
-        
-        .amenazas {
-            background: linear-gradient(135deg, #f39c12, #e67e22);
-            color: white;
-        }
-        
-        .section-title {
-            font-size: 24px;
-            font-weight: bold;
+            padding: 30px;
             text-align: center;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            position: relative;
         }
-        
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 3px;
-            background: rgba(255,255,255,0.8);
-            border-radius: 2px;
-        }
-        
-        .items-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        
-        .item {
-            background: rgba(255,255,255,0.15);
-            margin-bottom: 12px;
-            padding: 15px;
-            border-radius: 10px;
-            border-left: 4px solid rgba(255,255,255,0.8);
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-        
-        .item:hover {
-            background: rgba(255,255,255,0.25);
-            transform: translateX(5px);
-        }
-        
-        .item-code {
-            font-weight: bold;
-            font-size: 14px;
-            margin-bottom: 5px;
-            opacity: 0.9;
-        }
-        
-        .item-text {
-            font-size: 15px;
-            line-height: 1.4;
-        }
-        
-        .icon {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 40px;
-            opacity: 0.3;
-        }
-        
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .dofa-section {
-            animation: fadeInUp 0.6s ease forwards;
-        }
-        
-        .dofa-section:nth-child(1) { animation-delay: 0.1s; }
-        .dofa-section:nth-child(2) { animation-delay: 0.2s; }
-        .dofa-section:nth-child(3) { animation-delay: 0.3s; }
-        .dofa-section:nth-child(4) { animation-delay: 0.4s; }
-        
-        @media (max-width: 768px) {
-            .container { 
-                padding: 25px;
-                margin: 10px;
-            }
-            .title { font-size: 24px; }
-            .dofa-matrix { 
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-            .section-title { font-size: 20px; }
-            .item { padding: 12px; }
-        }
-        
-        .legend {
-            margin-top: 30px;
-            text-align: center;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            border-left: 5px solid #3498db;
-        }
-        
-        .legend-title {
-            font-weight: bold;
-            color: #2c3e50;
+
+        .header h1 {
+            font-size: 2rem;
             margin-bottom: 10px;
         }
-        
-        .legend-text {
-            color: #7f8c8d;
-            font-size: 14px;
-            line-height: 1.6;
+
+        .content {
+            padding: 30px;
+        }
+
+        .upload-section {
+            background: #f8f9fa;
+            border: 3px dashed #667eea;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .upload-section:hover {
+            border-color: #764ba2;
+            background: #f0f0ff;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .config-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .config-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .config-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .config-item label {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .config-item input {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .config-item input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .report-preview {
+            margin-top: 30px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .habilitado {
+            background-color: white !important;
+        }
+
+        .deshabilitado {
+            background-color: #ff4444 !important;
+            color: white;
+        }
+
+        .status-cell {
+            font-weight: bold;
+        }
+
+        .info-message {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .success-message {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .error-message {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            .header, .upload-section, .config-section, .actions {
+                display: none;
+            }
+            .container {
+                box-shadow: none;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1 class="title">Matriz DOFA</h1>
-            <p class="subtitle">Platec Colombia - Plataforma Tecnológica</p>
+            <h1>📊 Generador de Informe de Asistencia</h1>
+            <p>Sube tu archivo Excel y genera el informe automáticamente</p>
         </div>
-        
-        <div class="dofa-matrix">
-            <!-- FORTALEZAS -->
-            <div class="dofa-section fortalezas">
-                <div class="icon">💪</div>
-                <h2 class="section-title">Fortalezas</h2>
-                <ul class="items-list">
-                    <li class="item">
-                        <div class="item-code">F1</div>
-                        <div class="item-text">Más de 15 años de experiencia en el mercado colombiano</div>
-                    </li>
-                    <li class="item">
-                        <div class="item-code">F2</div>
-                        <div class="item-text">Desarrollo de software propio y especializado</div>
-                    </li>
-                    <li class="item">
-                        <div class="item-code">F3</div>
-                        <div class="item-text">Conocimiento profundo del mercado local</div>
-                    </li>
-                    <li class="item">
-                        <div class="item-code">F4</div>
-                        <div class="item-text">Soluciones integrales (hardware + software)</div>
-                    </li>
-                    <li class="item">
-                        <div class="item-code">F5</div>
-                        <div class="item-text">Capacidad de innovación y adaptación tecnológica</div>
-                    </li>
-                    <li class="item">
-                        <div class="item-code">F6</div>
-                        <div class="item-text">Experiencia en automatización industrial</div>
-                    </li>
-                </ul>
+
+        <div class="content">
+            <div class="upload-section">
+                <h2>📁 Subir Archivo Excel</h2>
+                <p style="margin: 15px 0; color: #666;">Selecciona el archivo que contiene las columnas: Identificación, Estado y Nombres</p>
+                <div class="file-input-wrapper">
+                    <label for="fileInput" class="btn">Seleccionar Archivo</label>
+                    <input type="file" id="fileInput" accept=".xlsx,.xls">
+                </div>
+                <p id="fileName" style="margin-top: 15px; color: #667eea; font-weight: bold;"></p>
             </div>
-            
-            <!-- OPORTUNIDADES -->
-            <div class="dofa-section oportunidades">
-                <div class="icon">🚀</div>
-                <h2 class="section-title">Oportunidades</h2>
-                <ul class="items-list">
-                    <li class="item">
-                        <div class="item-code">O1</div>
-                        <div class="item-text">Creciente demanda de automatización post-COVID-19</div>
-                    </li>
-                    <li class="item">
-                        <div class="item-code">O2</div>
-                        <div class="item-text">Políticas gubernamentales favorables a la transformación digital</div>
-                    </li>
-                    <li class="item">
-                        <div class="item-code">O3</div>
-                        <div class="item-text">Expansión a mercados latinoamericanos</div>
-                    </li>
-                    <li class="item">
-                        <div class="item-code">O4</div>
-                        <div class="item-text">Alianzas estratégicas con empresas internacionales</div>
-                    </li>
-                    <li class="item">
-                        <div class="item-code">O5</div>
-                        <div class="item-text">Crecimiento del sector industrial en Colombia</div>
-                    </li>
-                    <li class="item">
-                        <div class="item-code">O6</div>
-                        <div class="item-text">Demanda de trazabilidad en sectores regulados</div>
-                    </li>
-                </ul>
+
+            <div class="config-section" id="configSection" style="display: none;">
+                <h3>⚙️ Configuración del Informe</h3>
+                <div class="config-grid">
+                    <div class="config-item">
+                        <label for="fechaInicio">Fecha Inicio:</label>
+                        <input type="datetime-local" id="fechaInicio">
+                    </div>
+                    <div class="config-item">
+                        <label for="fechaFin">Fecha Fin:</label>
+                        <input type="datetime-local" id="fechaFin">
+                    </div>
+                    <div class="config-item">
+                        <label for="numFechas">Número de fechas:</label>
+                        <input type="number" id="numFechas" value="15" min="1" max="31">
+                    </div>
+                </div>
+                <div class="actions">
+                    <button class="btn" id="generateBtn">Generar Informe</button>
+                    <button class="btn" id="downloadBtn" style="display: none;">Descargar Excel</button>
+                </div>
             </div>
-            
-            <!-- DEBILIDADES -->
-            <div class="dofa-section debilidades">
-                <div class="icon">⚠️</div>
-                <h2 class="section-title">Debilidades</h2>
-                <ul class="items-list">
-                    <li class="item">
-                        <div class="item-code">D1</div>
-                        <div class="item-text">Dependencia del mercado nacional (limitada expansión internacional)</div>
-                    </li>
-                    <li class="item">
-                        <div class="item-code">D2</div>
-                        <div class="item-text">Recursos limitados para competir con multinacionales</div>
-                    </li>
-                    <li class="item">
-                        <div class="item-code">D3</div>
-                        <div class="item-text">Posible falta de certificaciones internacionales</div>
-                    </li>
-                    <li class="item">
-                        <div class="item-code">D4</div>
-                        <div class="item-text">Capacidad de producción limitada para grandes proyectos</div>
-                    </li>
-                    <li class="item">
-                        <div class="item-code">D5</div>
-                        <div class="item-text">Dependencia de proveedores internacionales de hardware</div>
-                    </li>
-                </ul>
-            </div>
-            
-            <!-- AMENAZAS -->
-            <div class="dofa-section amenazas">
-                <div class="icon">⚡</div>
-                <h2 class="section-title">Amenazas</h2>
-                <ul class="items-list">
-                    <li class="item">
-                        <div class="item-code">A1</div>
-                        <div class="item-text">Competencia de empresas multinacionales con mayor capital</div>
-                    </li>
-                    <li class="item">
-                        <div class="item-code">A2</div>
-                        <div class="item-text">Rápida obsolescencia tecnológica</div>
-                    </li>
-                    <li class="item">
-                        <div class="item-code">A3</div>
-                        <div class="item-text">Dependencia económica del país (recesiones, devaluación)</div>
-                    </li>
-                    <li class="item">
-                        <div class="item-code">A4</div>
-                        <div class="item-text">Cambios regulatorios en el sector TIC</div>
-                    </li>
-                    <li class="item">
-                        <div class="item-code">A5</div>
-                        <div class="item-text">Piratería y ciberseguridad</div>
-                    </li>
-                    <li class="item">
-                        <div class="item-code">A6</div>
-                        <div class="item-text">Escasez de talento especializado en TIC</div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        
-        <div class="legend">
-            <div class="legend-title">🎯 Estrategias DOFA Recomendadas</div>
-            <div class="legend-text">
-                <strong>FO:</strong> Aprovechar experiencia local + crecimiento digital = Expansión regional<br>
-                <strong>FA:</strong> Usar innovación + conocimiento local = Diferenciación ante multinacionales<br>
-                <strong>DO:</strong> Certificaciones internacionales + alianzas = Mayor competitividad<br>
-                <strong>DA:</strong> Diversificación de mercados + fortalecimiento financiero = Reducción de riesgos
-            </div>
+
+            <div id="messageArea"></div>
+
+            <div class="report-preview" id="reportPreview"></div>
         </div>
     </div>
+
+    <script>
+        let excelData = [];
+        
+        document.getElementById('fileInput').addEventListener('change', handleFileUpload);
+        document.getElementById('generateBtn').addEventListener('click', generateReport);
+        document.getElementById('downloadBtn').addEventListener('click', downloadExcel);
+
+        function handleFileUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            document.getElementById('fileName').textContent = `Archivo seleccionado: ${file.name}`;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, {type: 'array'});
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const jsonData = XLSX.utils.sheet_to_json(firstSheet);
+
+                    processExcelData(jsonData);
+                } catch (error) {
+                    showMessage('Error al leer el archivo. Asegúrate de que sea un archivo Excel válido.', 'error');
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function processExcelData(data) {
+            excelData = data.map(row => {
+                // Buscar las columnas independientemente del nombre exacto
+                let identificacion = row['IDENTIFICACION'] || row['Identificacion'] || row['identificacion'] || row['IDENTIFICACIÓN'] || '';
+                let estado = row['ESTADO'] || row['Estado'] || row['estado'] || '';
+                let nombres = row['NOMBRES'] || row['Nombres'] || row['nombres'] || row['NOMBRE DEL ASPIRANTE'] || '';
+
+                return {
+                    identificacion: identificacion.toString(),
+                    estado: estado.toString().trim(),
+                    nombres: nombres.toString().trim()
+                };
+            }).filter(row => row.identificacion && row.nombres);
+
+            if (excelData.length > 0) {
+                showMessage(`✅ Archivo procesado correctamente. Se encontraron ${excelData.length} registros.`, 'success');
+                document.getElementById('configSection').style.display = 'block';
+                
+                // Configurar fechas por defecto
+                const now = new Date();
+                const inicio = new Date(now);
+                inicio.setHours(10, 38, 0, 0);
+                const fin = new Date(now);
+                fin.setDate(fin.getDate() + 14);
+                fin.setHours(0, 0, 0, 0);
+                
+                document.getElementById('fechaInicio').value = formatDateTimeLocal(inicio);
+                document.getElementById('fechaFin').value = formatDateTimeLocal(fin);
+            } else {
+                showMessage('⚠️ No se encontraron datos válidos en el archivo. Verifica que contenga las columnas correctas.', 'error');
+            }
+        }
+
+        function formatDateTimeLocal(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            return `${year}-${month}-${day}T${hours}:${minutes}`;
+        }
+
+        function generateReport() {
+            if (excelData.length === 0) {
+                showMessage('Primero debes cargar un archivo Excel.', 'error');
+                return;
+            }
+
+            const fechaInicio = new Date(document.getElementById('fechaInicio').value);
+            const fechaFin = new Date(document.getElementById('fechaFin').value);
+            const numFechas = parseInt(document.getElementById('numFechas').value);
+
+            if (!fechaInicio || !fechaFin) {
+                showMessage('Por favor, configura las fechas del informe.', 'error');
+                return;
+            }
+
+            const fechas = generateDateRange(fechaInicio, fechaFin, numFechas);
+            const html = createReportTable(fechas);
+            
+            document.getElementById('reportPreview').innerHTML = html;
+            document.getElementById('downloadBtn').style.display = 'inline-block';
+            showMessage('✅ Informe generado exitosamente. Puedes descargarlo o imprimirlo.', 'success');
+        }
+
+        function generateDateRange(inicio, fin, count) {
+            const fechas = [];
+            const diff = fin - inicio;
+            const step = diff / (count - 1);
+
+            for (let i = 0; i < count; i++) {
+                const fecha = new Date(inicio.getTime() + (step * i));
+                fechas.push(fecha);
+            }
+
+            return fechas;
+        }
+
+        function createReportTable(fechas) {
+            let html = '<table><thead><tr>';
+            html += '<th rowspan="2">#</th>';
+            html += '<th rowspan="2">IDENTIFICACIÓN</th>';
+            html += '<th rowspan="2">NOMBRE DEL ASPIRANTE</th>';
+            
+            fechas.forEach(fecha => {
+                const dia = fecha.getDate().toString().padStart(2, '0');
+                const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+                const año = fecha.getFullYear().toString().slice(-2);
+                html += `<th>${dia}/${mes}/${año}</th>`;
+            });
+            
+            html += '</tr><tr>';
+            
+            fechas.forEach(fecha => {
+                const horas = fecha.getHours().toString().padStart(2, '0');
+                const minutos = fecha.getMinutes().toString().padStart(2, '0');
+                const ampm = fecha.getHours() >= 12 ? 'p.m.' : 'a.m.';
+                html += `<th>${horas}:${minutos} ${ampm}</th>`;
+            });
+            
+            html += '</tr></thead><tbody>';
+
+            excelData.forEach((persona, index) => {
+                html += '<tr>';
+                html += `<td>${index + 1}</td>`;
+                html += `<td>${persona.identificacion}</td>`;
+                html += `<td style="text-align: left;">${persona.nombres}</td>`;
+                
+                const isHabilitado = persona.estado.toLowerCase().includes('habilitado') && 
+                                     !persona.estado.toLowerCase().includes('deshabilitado');
+                
+                fechas.forEach(() => {
+                    if (isHabilitado) {
+                        html += '<td class="habilitado status-cell">X</td>';
+                    } else {
+                        html += '<td class="deshabilitado status-cell"></td>';
+                    }
+                });
+                
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+            return html;
+        }
+
+        function downloadExcel() {
+            const fechaInicio = new Date(document.getElementById('fechaInicio').value);
+            const fechaFin = new Date(document.getElementById('fechaFin').value);
+            const numFechas = parseInt(document.getElementById('numFechas').value);
+            const fechas = generateDateRange(fechaInicio, fechaFin, numFechas);
+
+            // Crear encabezados
+            const headers1 = ['#', 'IDENTIFICACIÓN', 'NOMBRE DEL ASPIRANTE'];
+            const headers2 = ['', '', ''];
+            
+            fechas.forEach(fecha => {
+                const dia = fecha.getDate().toString().padStart(2, '0');
+                const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+                const año = fecha.getFullYear().toString().slice(-2);
+                headers1.push(`${dia}/${mes}/${año}`);
+                
+                const horas = fecha.getHours().toString().padStart(2, '0');
+                const minutos = fecha.getMinutes().toString().padStart(2, '0');
+                const ampm = fecha.getHours() >= 12 ? 'p.m.' : 'a.m.';
+                headers2.push(`${horas}:${minutos} ${ampm}`);
+            });
+
+            // Crear datos
+            const rows = excelData.map((persona, index) => {
+                const row = [
+                    index + 1,
+                    persona.identificacion,
+                    persona.nombres
+                ];
+                
+                const isHabilitado = persona.estado.toLowerCase().includes('habilitado') && 
+                                     !persona.estado.toLowerCase().includes('deshabilitado');
+                
+                fechas.forEach(() => {
+                    row.push(isHabilitado ? 'X' : '');
+                });
+                
+                return row;
+            });
+
+            const wsData = [headers1, headers2, ...rows];
+            const ws = XLSX.utils.aoa_to_sheet(wsData);
+            
+            // Aplicar estilos (colores)
+            const range = XLSX.utils.decode_range(ws['!ref']);
+            for (let R = 2; R <= range.e.r; R++) {
+                for (let C = 3; C <= range.e.c; C++) {
+                    const cellAddress = XLSX.utils.encode_cell({r: R, c: C});
+                    if (!ws[cellAddress]) continue;
+                    
+                    const personaIndex = R - 2;
+                    const persona = excelData[personaIndex];
+                    const isHabilitado = persona.estado.toLowerCase().includes('habilitado') && 
+                                         !persona.estado.toLowerCase().includes('deshabilitado');
+                    
+                    if (!isHabilitado) {
+                        if (!ws[cellAddress].s) ws[cellAddress].s = {};
+                        ws[cellAddress].s.fill = {
+                            patternType: 'solid',
+                            fgColor: { rgb: 'FF4444' }
+                        };
+                    }
+                }
+            }
+
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Informe');
+            XLSX.writeFile(wb, `Informe_Asistencia_${new Date().toISOString().split('T')[0]}.xlsx`);
+        }
+
+        function showMessage(text, type) {
+            const messageArea = document.getElementById('messageArea');
+            const className = type === 'error' ? 'error-message' : 
+                            type === 'success' ? 'success-message' : 'info-message';
+            messageArea.innerHTML = `<div class="${className}">${text}</div>`;
+        }
+    </script>
 </body>
 </html>
