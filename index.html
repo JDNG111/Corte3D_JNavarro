@@ -62,6 +62,7 @@
         .file-input-wrapper {
             position: relative;
             display: inline-block;
+            margin: 10px;
         }
 
         input[type="file"] {
@@ -91,6 +92,68 @@
             transform: none;
         }
 
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            padding: 8px 20px;
+            font-size: 0.9rem;
+        }
+
+        .files-list {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin: 10px 0;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .file-info {
+            flex: 1;
+        }
+
+        .file-name {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .file-meta {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .date-input {
+            padding: 8px 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        .date-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
         .config-section {
             background: #f8f9fa;
             padding: 20px;
@@ -116,14 +179,14 @@
             color: #333;
         }
 
-        .config-item input {
+        .config-item input, .config-item select {
             padding: 10px;
             border: 2px solid #ddd;
             border-radius: 5px;
             font-size: 1rem;
         }
 
-        .config-item input:focus {
+        .config-item input:focus, .config-item select:focus {
             outline: none;
             border-color: #667eea;
         }
@@ -133,6 +196,35 @@
             gap: 15px;
             justify-content: center;
             margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn-copy {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+        }
+
+        .copy-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #4CAF50;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
 
         .report-preview {
@@ -160,6 +252,10 @@
             position: sticky;
             top: 0;
             z-index: 10;
+        }
+
+        th.file-header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
         }
 
         tr:nth-child(even) {
@@ -203,11 +299,45 @@
             border-radius: 5px;
         }
 
+        .mode-selector {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .mode-btn {
+            padding: 15px 30px;
+            border: 3px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .mode-btn:hover {
+            background: #f0f0ff;
+        }
+
+        .mode-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
         @media print {
             body {
                 background: white;
             }
-            .header, .upload-section, .config-section, .actions {
+            .header, .upload-section, .config-section, .actions, .mode-selector {
                 display: none;
             }
             .container {
@@ -219,40 +349,41 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>📊 Generador de Informe de Asistencia</h1>
-            <p>Sube tu archivo Excel y genera el informe automáticamente</p>
+            <h1>📊 Generador de Informe de Habilitaciones</h1>
+            <p>Sube múltiples archivos Excel y genera informes con seguimiento de estados</p>
         </div>
 
         <div class="content">
-            <div class="upload-section">
-                <h2>📁 Subir Archivo Excel</h2>
-                <p style="margin: 15px 0; color: #666;">Selecciona el archivo que contiene las columnas: Identificación, Estado y Nombres</p>
-                <div class="file-input-wrapper">
-                    <label for="fileInput" class="btn">Seleccionar Archivo</label>
-                    <input type="file" id="fileInput" accept=".xlsx,.xls">
+            <div class="mode-selector">
+                <div class="mode-btn active" data-mode="dates">
+                    📅 Modo Fechas/Horas
                 </div>
-                <p id="fileName" style="margin-top: 15px; color: #667eea; font-weight: bold;"></p>
+                <div class="mode-btn" data-mode="files">
+                    📁 Modo Archivos (Estados)
+                </div>
+            </div>
+
+            <div class="upload-section">
+                <h2 id="uploadTitle">📁 Subir Archivos Excel</h2>
+                <p style="margin: 15px 0; color: #666;">Selecciona uno o más archivos que contengan: Identificación, Estado y Nombres</p>
+                <div class="file-input-wrapper">
+                    <label for="fileInput" class="btn">+ Agregar Archivo(s)</label>
+                    <input type="file" id="fileInput" accept=".xlsx,.xls" multiple>
+                </div>
+                
+                <div id="filesList"></div>
             </div>
 
             <div class="config-section" id="configSection" style="display: none;">
                 <h3>⚙️ Configuración del Informe</h3>
-                <div class="config-grid">
-                    <div class="config-item">
-                        <label for="fechaInicio">Fecha Inicio:</label>
-                        <input type="datetime-local" id="fechaInicio">
-                    </div>
-                    <div class="config-item">
-                        <label for="fechaFin">Fecha Fin:</label>
-                        <input type="datetime-local" id="fechaFin">
-                    </div>
-                    <div class="config-item">
-                        <label for="numFechas">Número de fechas:</label>
-                        <input type="number" id="numFechas" value="15" min="1" max="31">
-                    </div>
+                <div class="config-grid" id="configGrid">
+                    <!-- Se llenará dinámicamente según el modo -->
                 </div>
                 <div class="actions">
                     <button class="btn" id="generateBtn">Generar Informe</button>
-                    <button class="btn" id="downloadBtn" style="display: none;">Descargar Excel</button>
+                    <button class="btn btn-copy" id="copyBtn" style="display: none;">📋 Copiar Tabla</button>
+                    <button class="btn btn-secondary" id="downloadBtn" style="display: none;">Descargar Excel</button>
+                    <button class="btn btn-danger" id="clearBtn">Limpiar Todo</button>
                 </div>
             </div>
 
@@ -263,37 +394,64 @@
     </div>
 
     <script>
-        let excelData = [];
+        let uploadedFiles = [];
+        let currentMode = 'dates';
         
         document.getElementById('fileInput').addEventListener('change', handleFileUpload);
         document.getElementById('generateBtn').addEventListener('click', generateReport);
         document.getElementById('downloadBtn').addEventListener('click', downloadExcel);
+        document.getElementById('clearBtn').addEventListener('click', clearAll);
+        document.getElementById('copyBtn').addEventListener('click', copyTableToClipboard);
+
+        // Modo selector
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentMode = this.dataset.mode;
+                updateConfigSection();
+            });
+        });
 
         function handleFileUpload(e) {
-            const file = e.target.files[0];
-            if (!file) return;
+            const files = Array.from(e.target.files);
+            
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const data = new Uint8Array(e.target.result);
+                        const workbook = XLSX.read(data, {type: 'array'});
+                        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                        const jsonData = XLSX.utils.sheet_to_json(firstSheet);
 
-            document.getElementById('fileName').textContent = `Archivo seleccionado: ${file.name}`;
+                        const processedData = processExcelData(jsonData);
+                        
+                        uploadedFiles.push({
+                            id: Date.now() + Math.random(),
+                            name: file.name,
+                            date: new Date(),
+                            customDate: null,
+                            data: processedData,
+                            recordCount: processedData.length
+                        });
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = new Uint8Array(e.target.result);
-                    const workbook = XLSX.read(data, {type: 'array'});
-                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                    const jsonData = XLSX.utils.sheet_to_json(firstSheet);
+                        updateFilesList();
+                        updateConfigSection();
+                        showMessage(`✅ Archivo "${file.name}" cargado: ${processedData.length} registros`, 'success');
+                    } catch (error) {
+                        showMessage(`Error al leer "${file.name}". Asegúrate de que sea un archivo Excel válido.`, 'error');
+                    }
+                };
+                reader.readAsArrayBuffer(file);
+            });
 
-                    processExcelData(jsonData);
-                } catch (error) {
-                    showMessage('Error al leer el archivo. Asegúrate de que sea un archivo Excel válido.', 'error');
-                }
-            };
-            reader.readAsArrayBuffer(file);
+            // Limpiar input
+            e.target.value = '';
         }
 
         function processExcelData(data) {
-            excelData = data.map(row => {
-                // Buscar las columnas independientemente del nombre exacto
+            return data.map(row => {
                 let identificacion = row['IDENTIFICACION'] || row['Identificacion'] || row['identificacion'] || row['IDENTIFICACIÓN'] || '';
                 let estado = row['ESTADO'] || row['Estado'] || row['estado'] || '';
                 let nombres = row['NOMBRES'] || row['Nombres'] || row['nombres'] || row['NOMBRE DEL ASPIRANTE'] || '';
@@ -304,12 +462,70 @@
                     nombres: nombres.toString().trim()
                 };
             }).filter(row => row.identificacion && row.nombres);
+        }
 
-            if (excelData.length > 0) {
-                showMessage(`✅ Archivo procesado correctamente. Se encontraron ${excelData.length} registros.`, 'success');
-                document.getElementById('configSection').style.display = 'block';
-                
-                // Configurar fechas por defecto
+        function updateFilesList() {
+            const container = document.getElementById('filesList');
+            
+            if (uploadedFiles.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+
+            let html = '<div class="files-list"><h3>📋 Archivos Cargados</h3>';
+            
+            uploadedFiles.forEach((file, index) => {
+                html += `
+                    <div class="file-item">
+                        <div class="file-info">
+                            <div class="file-name">${index + 1}. ${file.name}</div>
+                            <div class="file-meta">${file.recordCount} registros | Subido: ${file.date.toLocaleString()}</div>
+                        </div>
+                        <div class="file-actions">
+                            ${currentMode === 'files' ? `
+                                <input type="datetime-local" 
+                                       class="date-input" 
+                                       value="${file.customDate || formatDateTimeLocal(file.date)}"
+                                       onchange="updateFileDate(${file.id}, this.value)">
+                            ` : ''}
+                            <button class="btn btn-danger" onclick="removeFile(${file.id})">Eliminar</button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        window.updateFileDate = function(fileId, dateValue) {
+            const file = uploadedFiles.find(f => f.id === fileId);
+            if (file) {
+                file.customDate = dateValue;
+            }
+        };
+
+        window.removeFile = function(fileId) {
+            uploadedFiles = uploadedFiles.filter(f => f.id !== fileId);
+            updateFilesList();
+            updateConfigSection();
+            
+            if (uploadedFiles.length === 0) {
+                document.getElementById('reportPreview').innerHTML = '';
+                document.getElementById('downloadBtn').style.display = 'none';
+            }
+        };
+
+        function updateConfigSection() {
+            if (uploadedFiles.length === 0) {
+                document.getElementById('configSection').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('configSection').style.display = 'block';
+            const configGrid = document.getElementById('configGrid');
+            
+            if (currentMode === 'dates') {
                 const now = new Date();
                 const inicio = new Date(now);
                 inicio.setHours(10, 38, 0, 0);
@@ -317,11 +533,38 @@
                 fin.setDate(fin.getDate() + 14);
                 fin.setHours(0, 0, 0, 0);
                 
-                document.getElementById('fechaInicio').value = formatDateTimeLocal(inicio);
-                document.getElementById('fechaFin').value = formatDateTimeLocal(fin);
+                configGrid.innerHTML = `
+                    <div class="config-item">
+                        <label for="fechaInicio">Fecha Inicio:</label>
+                        <input type="datetime-local" id="fechaInicio" value="${formatDateTimeLocal(inicio)}">
+                    </div>
+                    <div class="config-item">
+                        <label for="fechaFin">Fecha Fin:</label>
+                        <input type="datetime-local" id="fechaFin" value="${formatDateTimeLocal(fin)}">
+                    </div>
+                    <div class="config-item">
+                        <label for="numFechas">Número de fechas:</label>
+                        <input type="number" id="numFechas" value="15" min="1" max="31">
+                    </div>
+                    <div class="config-item">
+                        <label for="fileSelect">Usar datos de:</label>
+                        <select id="fileSelect">
+                            ${uploadedFiles.map((f, i) => `<option value="${i}">${f.name}</option>`).join('')}
+                        </select>
+                    </div>
+                `;
             } else {
-                showMessage('⚠️ No se encontraron datos válidos en el archivo. Verifica que contenga las columnas correctas.', 'error');
+                configGrid.innerHTML = `
+                    <div class="config-item">
+                        <label>Archivos a incluir:</label>
+                        <div style="padding: 10px; background: white; border-radius: 5px;">
+                            ${uploadedFiles.length} archivo(s) cargado(s)
+                        </div>
+                    </div>
+                `;
             }
+            
+            updateFilesList();
         }
 
         function formatDateTimeLocal(date) {
@@ -334,42 +577,39 @@
         }
 
         function generateReport() {
-            if (excelData.length === 0) {
-                showMessage('Primero debes cargar un archivo Excel.', 'error');
+            if (uploadedFiles.length === 0) {
+                showMessage('Primero debes cargar al menos un archivo Excel.', 'error');
                 return;
             }
 
-            const fechaInicio = new Date(document.getElementById('fechaInicio').value);
-            const fechaFin = new Date(document.getElementById('fechaFin').value);
-            const numFechas = parseInt(document.getElementById('numFechas').value);
-
-            if (!fechaInicio || !fechaFin) {
-                showMessage('Por favor, configura las fechas del informe.', 'error');
-                return;
+            let html;
+            
+            if (currentMode === 'dates') {
+                html = generateDatesReport();
+            } else {
+                html = generateFilesReport();
             }
-
-            const fechas = generateDateRange(fechaInicio, fechaFin, numFechas);
-            const html = createReportTable(fechas);
             
             document.getElementById('reportPreview').innerHTML = html;
             document.getElementById('downloadBtn').style.display = 'inline-block';
+            document.getElementById('copyBtn').style.display = 'inline-block';
             showMessage('✅ Informe generado exitosamente. Puedes descargarlo o imprimirlo.', 'success');
         }
 
-        function generateDateRange(inicio, fin, count) {
-            const fechas = [];
-            const diff = fin - inicio;
-            const step = diff / (count - 1);
+        function generateDatesReport() {
+            const fechaInicio = new Date(document.getElementById('fechaInicio').value);
+            const fechaFin = new Date(document.getElementById('fechaFin').value);
+            const numFechas = parseInt(document.getElementById('numFechas').value);
+            const fileIndex = parseInt(document.getElementById('fileSelect').value);
 
-            for (let i = 0; i < count; i++) {
-                const fecha = new Date(inicio.getTime() + (step * i));
-                fechas.push(fecha);
+            if (!fechaInicio || !fechaFin) {
+                showMessage('Por favor, configura las fechas del informe.', 'error');
+                return '';
             }
 
-            return fechas;
-        }
+            const selectedFile = uploadedFiles[fileIndex];
+            const fechas = generateDateRange(fechaInicio, fechaFin, numFechas);
 
-        function createReportTable(fechas) {
             let html = '<table><thead><tr>';
             html += '<th rowspan="2">#</th>';
             html += '<th rowspan="2">IDENTIFICACIÓN</th>';
@@ -393,7 +633,7 @@
             
             html += '</tr></thead><tbody>';
 
-            excelData.forEach((persona, index) => {
+            selectedFile.data.forEach((persona, index) => {
                 html += '<tr>';
                 html += `<td>${index + 1}</td>`;
                 html += `<td>${persona.identificacion}</td>`;
@@ -417,13 +657,102 @@
             return html;
         }
 
+        function generateFilesReport() {
+            // Obtener todas las personas únicas de todos los archivos
+            const allPeople = new Map();
+            
+            uploadedFiles.forEach(file => {
+                file.data.forEach(persona => {
+                    if (!allPeople.has(persona.identificacion)) {
+                        allPeople.set(persona.identificacion, {
+                            identificacion: persona.identificacion,
+                            nombres: persona.nombres
+                        });
+                    }
+                });
+            });
+
+            const sortedPeople = Array.from(allPeople.values()).sort((a, b) => 
+                a.nombres.localeCompare(b.nombres)
+            );
+
+            let html = '<table><thead><tr>';
+            html += '<th>#</th>';
+            html += '<th>IDENTIFICACIÓN</th>';
+            html += '<th>NOMBRE DEL ASPIRANTE</th>';
+            
+            uploadedFiles.forEach(file => {
+                const fecha = file.customDate ? new Date(file.customDate) : file.date;
+                const dia = fecha.getDate().toString().padStart(2, '0');
+                const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+                const año = fecha.getFullYear();
+                const horas = fecha.getHours().toString().padStart(2, '0');
+                const minutos = fecha.getMinutes().toString().padStart(2, '0');
+                
+                html += `<th class="file-header">${dia}/${mes}/${año}<br>${horas}:${minutos}</th>`;
+            });
+            
+            html += '</tr></thead><tbody>';
+
+            sortedPeople.forEach((persona, index) => {
+                html += '<tr>';
+                html += `<td>${index + 1}</td>`;
+                html += `<td>${persona.identificacion}</td>`;
+                html += `<td style="text-align: left;">${persona.nombres}</td>`;
+                
+                uploadedFiles.forEach(file => {
+                    const personInFile = file.data.find(p => p.identificacion === persona.identificacion);
+                    
+                    if (personInFile) {
+                        const isHabilitado = personInFile.estado.toLowerCase().includes('habilitado') && 
+                                             !personInFile.estado.toLowerCase().includes('deshabilitado');
+                        
+                        if (isHabilitado) {
+                            html += '<td class="habilitado status-cell">HABILITADO</td>';
+                        } else {
+                            html += '<td class="deshabilitado status-cell">DESHABILITADO</td>';
+                        }
+                    } else {
+                        html += '<td style="background: #f0f0f0;">N/A</td>';
+                    }
+                });
+                
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+            return html;
+        }
+
+        function generateDateRange(inicio, fin, count) {
+            const fechas = [];
+            const diff = fin - inicio;
+            const step = diff / (count - 1);
+
+            for (let i = 0; i < count; i++) {
+                const fecha = new Date(inicio.getTime() + (step * i));
+                fechas.push(fecha);
+            }
+
+            return fechas;
+        }
+
         function downloadExcel() {
+            if (currentMode === 'dates') {
+                downloadDatesExcel();
+            } else {
+                downloadFilesExcel();
+            }
+        }
+
+        function downloadDatesExcel() {
             const fechaInicio = new Date(document.getElementById('fechaInicio').value);
             const fechaFin = new Date(document.getElementById('fechaFin').value);
             const numFechas = parseInt(document.getElementById('numFechas').value);
+            const fileIndex = parseInt(document.getElementById('fileSelect').value);
+            const selectedFile = uploadedFiles[fileIndex];
             const fechas = generateDateRange(fechaInicio, fechaFin, numFechas);
 
-            // Crear encabezados
             const headers1 = ['#', 'IDENTIFICACIÓN', 'NOMBRE DEL ASPIRANTE'];
             const headers2 = ['', '', ''];
             
@@ -439,8 +768,7 @@
                 headers2.push(`${horas}:${minutos} ${ampm}`);
             });
 
-            // Crear datos
-            const rows = excelData.map((persona, index) => {
+            const rows = selectedFile.data.map((persona, index) => {
                 const row = [
                     index + 1,
                     persona.identificacion,
@@ -460,7 +788,7 @@
             const wsData = [headers1, headers2, ...rows];
             const ws = XLSX.utils.aoa_to_sheet(wsData);
             
-            // Aplicar estilos (colores)
+            // Aplicar colores a las celdas
             const range = XLSX.utils.decode_range(ws['!ref']);
             for (let R = 2; R <= range.e.r; R++) {
                 for (let C = 3; C <= range.e.c; C++) {
@@ -468,23 +796,177 @@
                     if (!ws[cellAddress]) continue;
                     
                     const personaIndex = R - 2;
-                    const persona = excelData[personaIndex];
+                    const persona = selectedFile.data[personaIndex];
                     const isHabilitado = persona.estado.toLowerCase().includes('habilitado') && 
                                          !persona.estado.toLowerCase().includes('deshabilitado');
                     
+                    if (!ws[cellAddress].s) ws[cellAddress].s = {};
+                    
                     if (!isHabilitado) {
-                        if (!ws[cellAddress].s) ws[cellAddress].s = {};
                         ws[cellAddress].s.fill = {
                             patternType: 'solid',
                             fgColor: { rgb: 'FF4444' }
                         };
+                        ws[cellAddress].s.font = {
+                            color: { rgb: 'FFFFFF' }
+                        };
                     }
                 }
             }
-
+            
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, 'Informe');
-            XLSX.writeFile(wb, `Informe_Asistencia_${new Date().toISOString().split('T')[0]}.xlsx`);
+            XLSX.writeFile(wb, `Informe_Fechas_${new Date().toISOString().split('T')[0]}.xlsx`);
+        }
+
+        function downloadFilesExcel() {
+            const allPeople = new Map();
+            
+            uploadedFiles.forEach(file => {
+                file.data.forEach(persona => {
+                    if (!allPeople.has(persona.identificacion)) {
+                        allPeople.set(persona.identificacion, {
+                            identificacion: persona.identificacion,
+                            nombres: persona.nombres
+                        });
+                    }
+                });
+            });
+
+            const sortedPeople = Array.from(allPeople.values()).sort((a, b) => 
+                a.nombres.localeCompare(b.nombres)
+            );
+
+            const headers = ['#', 'IDENTIFICACIÓN', 'NOMBRE DEL ASPIRANTE'];
+            
+            uploadedFiles.forEach(file => {
+                const fecha = file.customDate ? new Date(file.customDate) : file.date;
+                const dia = fecha.getDate().toString().padStart(2, '0');
+                const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+                const año = fecha.getFullYear();
+                const horas = fecha.getHours().toString().padStart(2, '0');
+                const minutos = fecha.getMinutes().toString().padStart(2, '0');
+                
+                headers.push(`${dia}/${mes}/${año} ${horas}:${minutos}`);
+            });
+
+            const rows = sortedPeople.map((persona, index) => {
+                const row = [
+                    index + 1,
+                    persona.identificacion,
+                    persona.nombres
+                ];
+                
+                uploadedFiles.forEach(file => {
+                    const personInFile = file.data.find(p => p.identificacion === persona.identificacion);
+                    
+                    if (personInFile) {
+                        const isHabilitado = personInFile.estado.toLowerCase().includes('habilitado') && 
+                                             !personInFile.estado.toLowerCase().includes('deshabilitado');
+                        row.push(isHabilitado ? 'HABILITADO' : 'DESHABILITADO');
+                    } else {
+                        row.push('N/A');
+                    }
+                });
+                
+                return row;
+            });
+
+            const wsData = [headers, ...rows];
+            const ws = XLSX.utils.aoa_to_sheet(wsData);
+            
+            // Aplicar colores a las celdas en modo archivos
+            const range = XLSX.utils.decode_range(ws['!ref']);
+            for (let R = 1; R <= range.e.r; R++) {
+                for (let C = 3; C <= range.e.c; C++) {
+                    const cellAddress = XLSX.utils.encode_cell({r: R, c: C});
+                    if (!ws[cellAddress]) continue;
+                    
+                    const cellValue = ws[cellAddress].v;
+                    
+                    if (!ws[cellAddress].s) ws[cellAddress].s = {};
+                    
+                    if (cellValue === 'DESHABILITADO') {
+                        ws[cellAddress].s.fill = {
+                            patternType: 'solid',
+                            fgColor: { rgb: 'FF4444' }
+                        };
+                        ws[cellAddress].s.font = {
+                            color: { rgb: 'FFFFFF' },
+                            bold: true
+                        };
+                    } else if (cellValue === 'HABILITADO') {
+                        ws[cellAddress].s.font = {
+                            bold: true
+                        };
+                    } else if (cellValue === 'N/A') {
+                        ws[cellAddress].s.fill = {
+                            patternType: 'solid',
+                            fgColor: { rgb: 'F0F0F0' }
+                        };
+                    }
+                }
+            }
+            
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Informe Estados');
+            XLSX.writeFile(wb, `Informe_Estados_${new Date().toISOString().split('T')[0]}.xlsx`);
+        }
+
+        function clearAll() {
+            if (confirm('¿Estás seguro de que deseas limpiar todos los archivos y el informe?')) {
+                uploadedFiles = [];
+                updateFilesList();
+                document.getElementById('configSection').style.display = 'none';
+                document.getElementById('reportPreview').innerHTML = '';
+                document.getElementById('downloadBtn').style.display = 'none';
+                document.getElementById('copyBtn').style.display = 'none';
+                document.getElementById('messageArea').innerHTML = '';
+                showMessage('✅ Todo limpiado correctamente.', 'success');
+            }
+        }
+
+        function copyTableToClipboard() {
+            const table = document.querySelector('#reportPreview table');
+            if (!table) {
+                showMessage('No hay tabla para copiar', 'error');
+                return;
+            }
+
+            // Crear un rango de selección
+            const range = document.createRange();
+            range.selectNode(table);
+            
+            // Limpiar selección previa y agregar la nueva
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+
+            try {
+                // Copiar con formato
+                document.execCommand('copy');
+                
+                // Mostrar notificación
+                showCopyNotification();
+                
+                // Limpiar selección
+                window.getSelection().removeAllRanges();
+                
+                showMessage('✅ Tabla copiada al portapapeles con formato. Pégala en Excel, Word o Google Sheets.', 'success');
+            } catch (err) {
+                showMessage('Error al copiar. Intenta seleccionar manualmente la tabla y usar Ctrl+C', 'error');
+            }
+        }
+
+        function showCopyNotification() {
+            const notification = document.createElement('div');
+            notification.className = 'copy-notification';
+            notification.innerHTML = '✅ Tabla copiada con formato!';
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => notification.remove(), 300);
+            }, 2000);
         }
 
         function showMessage(text, type) {
@@ -493,6 +975,6 @@
                             type === 'success' ? 'success-message' : 'info-message';
             messageArea.innerHTML = `<div class="${className}">${text}</div>`;
         }
-    </script>
+</script>
 </body>
 </html>
