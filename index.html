@@ -653,6 +653,21 @@
                 html += '</tr>';
             });
 
+            // Fila de totales
+            html += '<tr style="background: #667eea; color: white; font-weight: bold;">';
+            html += '<td colspan="3" style="text-align: left; padding-left: 20px;">TOTAL EN PLATAFORMA</td>';
+            
+            const totalHabilitados = selectedFile.data.filter(p => 
+                p.estado.toLowerCase().includes('habilitado') && 
+                !p.estado.toLowerCase().includes('deshabilitado')
+            ).length;
+            
+            fechas.forEach(() => {
+                html += `<td>${totalHabilitados}</td>`;
+            });
+            
+            html += '</tr>';
+
             html += '</tbody></table>';
             return html;
         }
@@ -720,6 +735,21 @@
                 html += '</tr>';
             });
 
+            // Fila de totales
+            html += '<tr style="background: #667eea; color: white; font-weight: bold;">';
+            html += '<td colspan="3" style="text-align: left; padding-left: 20px;">TOTAL EN PLATAFORMA</td>';
+            
+            uploadedFiles.forEach(file => {
+                const habilitadosCount = file.data.filter(p => 
+                    p.estado.toLowerCase().includes('habilitado') && 
+                    !p.estado.toLowerCase().includes('deshabilitado')
+                ).length;
+                
+                html += `<td>${habilitadosCount}</td>`;
+            });
+            
+            html += '</tr>';
+
             html += '</tbody></table>';
             return html;
         }
@@ -785,12 +815,24 @@
                 return row;
             });
 
+            // Agregar fila de totales
+            const totalHabilitados = selectedFile.data.filter(p => 
+                p.estado.toLowerCase().includes('habilitado') && 
+                !p.estado.toLowerCase().includes('deshabilitado')
+            ).length;
+            
+            const totalRow = ['', '', 'TOTAL EN PLATAFORMA'];
+            fechas.forEach(() => {
+                totalRow.push(totalHabilitados);
+            });
+            rows.push(totalRow);
+
             const wsData = [headers1, headers2, ...rows];
             const ws = XLSX.utils.aoa_to_sheet(wsData);
             
             // Aplicar colores a las celdas
             const range = XLSX.utils.decode_range(ws['!ref']);
-            for (let R = 2; R <= range.e.r; R++) {
+            for (let R = 2; R <= range.e.r - 1; R++) { // -1 para no incluir la fila de totales
                 for (let C = 3; C <= range.e.c; C++) {
                     const cellAddress = XLSX.utils.encode_cell({r: R, c: C});
                     if (!ws[cellAddress]) continue;
@@ -812,6 +854,23 @@
                         };
                     }
                 }
+            }
+
+            // Aplicar formato a la fila de totales
+            const totalRowIndex = range.e.r;
+            for (let C = 0; C <= range.e.c; C++) {
+                const cellAddress = XLSX.utils.encode_cell({r: totalRowIndex, c: C});
+                if (!ws[cellAddress]) continue;
+                
+                if (!ws[cellAddress].s) ws[cellAddress].s = {};
+                ws[cellAddress].s.fill = {
+                    patternType: 'solid',
+                    fgColor: { rgb: '667eea' }
+                };
+                ws[cellAddress].s.font = {
+                    color: { rgb: 'FFFFFF' },
+                    bold: true
+                };
             }
             
             const wb = XLSX.utils.book_new();
@@ -872,12 +931,23 @@
                 return row;
             });
 
+            // Agregar fila de totales
+            const totalRow = ['', '', 'TOTAL EN PLATAFORMA'];
+            uploadedFiles.forEach(file => {
+                const habilitadosCount = file.data.filter(p => 
+                    p.estado.toLowerCase().includes('habilitado') && 
+                    !p.estado.toLowerCase().includes('deshabilitado')
+                ).length;
+                totalRow.push(habilitadosCount);
+            });
+            rows.push(totalRow);
+
             const wsData = [headers, ...rows];
             const ws = XLSX.utils.aoa_to_sheet(wsData);
             
             // Aplicar colores a las celdas en modo archivos
             const range = XLSX.utils.decode_range(ws['!ref']);
-            for (let R = 1; R <= range.e.r; R++) {
+            for (let R = 1; R <= range.e.r - 1; R++) { // -1 para no incluir la fila de totales
                 for (let C = 3; C <= range.e.c; C++) {
                     const cellAddress = XLSX.utils.encode_cell({r: R, c: C});
                     if (!ws[cellAddress]) continue;
@@ -906,6 +976,23 @@
                         };
                     }
                 }
+            }
+
+            // Aplicar formato a la fila de totales
+            const totalRowIndex = range.e.r;
+            for (let C = 0; C <= range.e.c; C++) {
+                const cellAddress = XLSX.utils.encode_cell({r: totalRowIndex, c: C});
+                if (!ws[cellAddress]) continue;
+                
+                if (!ws[cellAddress].s) ws[cellAddress].s = {};
+                ws[cellAddress].s.fill = {
+                    patternType: 'solid',
+                    fgColor: { rgb: '667eea' }
+                };
+                ws[cellAddress].s.font = {
+                    color: { rgb: 'FFFFFF' },
+                    bold: true
+                };
             }
             
             const wb = XLSX.utils.book_new();
