@@ -970,21 +970,18 @@
                 let wasInPrevious = false;
                 person.estados.forEach((estado, estadoIdx) => {
                     let cellClass = '';
+                    const estadoNormalizado = estado.toUpperCase().trim();
                     
-                    if (estado === 'N/A') {
-                        if (estadoIdx > 0) {
-                            cellClass = 'new-person-' + (estado === 'HABILITADO' ? 'hab' : 'deshab');
-                        } else {
-                            cellClass = 'na-cell';
-                        }
+                    if (estadoNormalizado === 'N/A') {
+                        cellClass = 'na-cell';
                     } else {
                         if (estadoIdx === 0) {
                             wasInPrevious = true;
                             cellClass = getStatusClass(estado);
                         } else {
-                            const prevEstado = person.estados[estadoIdx - 1];
+                            const prevEstado = person.estados[estadoIdx - 1].toUpperCase().trim();
                             if (prevEstado === 'N/A' && !wasInPrevious) {
-                                cellClass = 'new-person-' + (estado === 'HABILITADO' ? 'hab' : 'deshab');
+                                cellClass = 'new-person-' + (estadoNormalizado === 'HABILITADO' ? 'hab' : 'deshab');
                                 wasInPrevious = true;
                             } else {
                                 cellClass = getStatusClass(estado);
@@ -1004,7 +1001,7 @@
                 
                 rowData.estados.forEach((estado, estadoIdx) => {
                     const displayText = rowData.classes[estadoIdx].includes('new-person') 
-                        ? `NUEVO ${estado}` 
+                        ? `NUEVO ${estado.toUpperCase()}` 
                         : estado;
                     html += `<td class="${rowData.classes[estadoIdx]} status-cell">${displayText}</td>`;
                 });
@@ -1018,7 +1015,7 @@
             
             uploadedFiles.forEach((file, idx) => {
                 const total = file.data.length;
-                html += `<td id="total-col-${idx + 3}" data-total="${total}">${total}</td>`;
+                html += `<td id="total-col-${idx + 3}" data-total="${total}" data-file-idx="${idx}">${total}</td>`;
             });
             
             html += '</tr>';
@@ -1055,7 +1052,7 @@
 
             const rows = document.querySelectorAll('#reportPreview tbody tr:not(:last-child)');
             
-            let visibleCounts = {};
+            let visibleCountsByFile = {};
             
             rows.forEach((row, idx) => {
                 const rowData = fullTableData[idx];
@@ -1076,15 +1073,16 @@
                     row.style.display = '';
                     
                     rowData.classes.forEach((cls, colIdx) => {
-                        const colKey = colIdx + 3;
-                        if (!visibleCounts[colKey]) {
-                            visibleCounts[colKey] = { habilitado: 0, deshabilitado: 0, na: 0, nuevo: 0 };
+                        const fileIdx = colIdx;
+                        if (!visibleCountsByFile[fileIdx]) {
+                            visibleCountsByFile[fileIdx] = { habilitado: 0, deshabilitado: 0, na: 0, nuevoHab: 0, nuevoDeshab: 0 };
                         }
                         
-                        if (cls === 'habilitado') visibleCounts[colKey].habilitado++;
-                        else if (cls === 'deshabilitado') visibleCounts[colKey].deshabilitado++;
-                        else if (cls === 'na-cell') visibleCounts[colKey].na++;
-                        else if (cls.includes('new-person')) visibleCounts[colKey].nuevo++;
+                        if (cls === 'habilitado') visibleCountsByFile[fileIdx].habilitado++;
+                        else if (cls === 'deshabilitado') visibleCountsByFile[fileIdx].deshabilitado++;
+                        else if (cls === 'na-cell') visibleCountsByFile[fileIdx].na++;
+                        else if (cls === 'new-person-hab') visibleCountsByFile[fileIdx].nuevoHab++;
+                        else if (cls === 'new-person-deshab') visibleCountsByFile[fileIdx].nuevoDeshab++;
                     });
                 } else {
                     row.style.display = 'none';
@@ -1092,25 +1090,26 @@
             });
 
             if (currentMode === 'files') {
-                uploadedFiles.forEach((file, idx) => {
-                    const colIdx = idx + 3;
+                uploadedFiles.forEach((file, fileIdx) => {
+                    const colIdx = fileIdx + 3;
                     const totalCell = document.getElementById(`total-col-${colIdx}`);
                     if (totalCell) {
-                        const total = parseInt(totalCell.dataset.total);
-                        const counts = visibleCounts[colIdx] || { habilitado: 0, deshabilitado: 0, na: 0, nuevo: 0 };
+                        const totalInFile = parseInt(totalCell.dataset.total);
+                        const counts = visibleCountsByFile[fileIdx] || { habilitado: 0, deshabilitado: 0, na: 0, nuevoHab: 0, nuevoDeshab: 0 };
                         
                         let filterText = '';
                         if (showHabilitado && !showDeshabilitado && !showNA && !showNuevos) {
-                            filterText = `Habilitados: ${counts.habilitado}/${total}`;
+                            filterText = `Habilitados: ${counts.habilitado}/${totalInFile}`;
                         } else if (!showHabilitado && showDeshabilitado && !showNA && !showNuevos) {
-                            filterText = `Deshabilitados: ${counts.deshabilitado}/${total}`;
+                            filterText = `Deshabilitados: ${counts.deshabilitado}/${totalInFile}`;
                         } else if (!showHabilitado && !showDeshabilitado && showNA && !showNuevos) {
-                            filterText = `N/A: ${counts.na}/${total}`;
+                            filterText = `N/A: ${counts.na}/${totalInFile}`;
                         } else if (!showHabilitado && !showDeshabilitado && !showNA && showNuevos) {
-                            filterText = `Nuevos: ${counts.nuevo}/${total}`;
+                            const totalNuevos = counts.nuevoHab + counts.nuevoDeshab;
+                            filterText = `Nuevos: ${totalNuevos}/${totalInFile}`;
                         } else {
-                            const visible = counts.habilitado + counts.deshabilitado + counts.na + counts.nuevo;
-                            filterText = `Filtrados: ${visible}/${total}`;
+                            const visible = counts.habilitado + counts.deshabilitado + counts.na + counts.nuevoHab + counts.nuevoDeshab;
+                            filterText = `Filtrados: ${visible}/${totalInFile}`;
                         }
                         
                         totalCell.textContent = filterText;
