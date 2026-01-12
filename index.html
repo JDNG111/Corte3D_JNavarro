@@ -102,6 +102,11 @@
             font-size: 0.9rem;
         }
 
+        .btn-small {
+            padding: 5px 15px;
+            font-size: 0.85rem;
+        }
+
         .files-list {
             background: white;
             border: 2px solid #667eea;
@@ -227,6 +232,45 @@
             }
         }
 
+        .filters-section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 2px solid #667eea;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .filter-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-option input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .filter-option label {
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .column-selector {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
         .report-preview {
             margin-top: 30px;
             overflow-x: auto;
@@ -243,6 +287,7 @@
             border: 1px solid #ddd;
             padding: 8px;
             text-align: center;
+            position: relative;
         }
 
         th {
@@ -258,6 +303,24 @@
             background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
         }
 
+        th .copy-column-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid white;
+            border-radius: 3px;
+            padding: 2px 6px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        th .copy-column-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
         tr:nth-child(even) {
             background: #f8f9fa;
         }
@@ -271,8 +334,43 @@
             color: white;
         }
 
+        .na-cell {
+            background-color: #FFC107 !important;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .new-person {
+            background-color: #4CAF50 !important;
+            color: white;
+        }
+
         .status-cell {
             font-weight: bold;
+        }
+
+        .legend {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid #667eea;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-color {
+            width: 30px;
+            height: 20px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
         }
 
         .info-message {
@@ -327,17 +425,15 @@
             color: white;
         }
 
-        .empty-state {
-            text-align: center;
-            padding: 40px;
-            color: #999;
+        .hidden {
+            display: none !important;
         }
 
         @media print {
             body {
                 background: white;
             }
-            .header, .upload-section, .config-section, .actions, .mode-selector {
+            .header, .upload-section, .config-section, .actions, .mode-selector, .filters-section {
                 display: none;
             }
             .container {
@@ -381,13 +477,64 @@
                 </div>
                 <div class="actions">
                     <button class="btn" id="generateBtn">Generar Informe</button>
-                    <button class="btn btn-copy" id="copyBtn" style="display: none;">📋 Copiar Tabla</button>
+                    <button class="btn btn-copy" id="copyBtn" style="display: none;">📋 Copiar Tabla Completa</button>
                     <button class="btn btn-secondary" id="downloadBtn" style="display: none;">Descargar Excel</button>
                     <button class="btn btn-danger" id="clearBtn">Limpiar Todo</button>
                 </div>
             </div>
 
             <div id="messageArea"></div>
+
+            <div id="filtersSection" style="display: none;">
+                <div class="filters-section">
+                    <h3>🔍 Filtros</h3>
+                    <div class="filters-grid">
+                        <div class="filter-option">
+                            <input type="checkbox" id="filterHabilitado" checked>
+                            <label for="filterHabilitado">Mostrar Habilitados</label>
+                        </div>
+                        <div class="filter-option">
+                            <input type="checkbox" id="filterDeshabilitado" checked>
+                            <label for="filterDeshabilitado">Mostrar Deshabilitados</label>
+                        </div>
+                        <div class="filter-option">
+                            <input type="checkbox" id="filterNA" checked>
+                            <label for="filterNA">Mostrar N/A</label>
+                        </div>
+                        <div class="filter-option">
+                            <input type="checkbox" id="filterNuevos" checked>
+                            <label for="filterNuevos">Mostrar Nuevos</label>
+                        </div>
+                    </div>
+                    
+                    <div class="column-selector" id="columnSelector">
+                        <h4>📋 Copiar Columna Específica:</h4>
+                        <select id="columnSelect" style="width: 100%; padding: 10px; margin-top: 10px; border-radius: 5px; border: 2px solid #ddd;">
+                            <option value="">Selecciona una columna...</option>
+                        </select>
+                        <button class="btn btn-copy btn-small" id="copyColumnBtn" style="margin-top: 10px;">Copiar Columna</button>
+                    </div>
+                </div>
+
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: white; border: 2px solid #ddd;"></div>
+                        <span>Habilitado</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #ff4444;"></div>
+                        <span>Deshabilitado</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #FFC107;"></div>
+                        <span>N/A (No aparece en archivo)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #4CAF50;"></div>
+                        <span>Nuevo (Primera aparición)</span>
+                    </div>
+                </div>
+            </div>
 
             <div class="report-preview" id="reportPreview"></div>
         </div>
@@ -396,12 +543,20 @@
     <script>
         let uploadedFiles = [];
         let currentMode = 'dates';
+        let fullTableData = [];
         
         document.getElementById('fileInput').addEventListener('change', handleFileUpload);
         document.getElementById('generateBtn').addEventListener('click', generateReport);
         document.getElementById('downloadBtn').addEventListener('click', downloadExcel);
         document.getElementById('clearBtn').addEventListener('click', clearAll);
         document.getElementById('copyBtn').addEventListener('click', copyTableToClipboard);
+        document.getElementById('copyColumnBtn').addEventListener('click', copySpecificColumn);
+
+        // Filtros
+        document.getElementById('filterHabilitado').addEventListener('change', applyFilters);
+        document.getElementById('filterDeshabilitado').addEventListener('change', applyFilters);
+        document.getElementById('filterNA').addEventListener('change', applyFilters);
+        document.getElementById('filterNuevos').addEventListener('change', applyFilters);
 
         // Modo selector
         document.querySelectorAll('.mode-btn').forEach(btn => {
@@ -446,7 +601,6 @@
                 reader.readAsArrayBuffer(file);
             });
 
-            // Limpiar input
             e.target.value = '';
         }
 
@@ -513,6 +667,8 @@
             if (uploadedFiles.length === 0) {
                 document.getElementById('reportPreview').innerHTML = '';
                 document.getElementById('downloadBtn').style.display = 'none';
+                document.getElementById('copyBtn').style.display = 'none';
+                document.getElementById('filtersSection').style.display = 'none';
             }
         };
 
@@ -593,6 +749,9 @@
             document.getElementById('reportPreview').innerHTML = html;
             document.getElementById('downloadBtn').style.display = 'inline-block';
             document.getElementById('copyBtn').style.display = 'inline-block';
+            document.getElementById('filtersSection').style.display = 'block';
+            
+            updateColumnSelector();
             showMessage('✅ Informe generado exitosamente. Puedes descargarlo o imprimirlo.', 'success');
         }
 
@@ -610,37 +769,47 @@
             const selectedFile = uploadedFiles[fileIndex];
             const fechas = generateDateRange(fechaInicio, fechaFin, numFechas);
 
+            fullTableData = [];
+
             let html = '<table><thead><tr>';
             html += '<th rowspan="2">#</th>';
             html += '<th rowspan="2">IDENTIFICACIÓN</th>';
             html += '<th rowspan="2">NOMBRE DEL ASPIRANTE</th>';
             
-            fechas.forEach(fecha => {
+            fechas.forEach((fecha, idx) => {
                 const dia = fecha.getDate().toString().padStart(2, '0');
                 const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
                 const año = fecha.getFullYear().toString().slice(-2);
-                html += `<th>${dia}/${mes}/${año}</th>`;
+                html += `<th data-column="${idx + 3}">${dia}/${mes}/${año}</th>`;
             });
             
             html += '</tr><tr>';
             
-            fechas.forEach(fecha => {
+            fechas.forEach((fecha, idx) => {
                 const horas = fecha.getHours().toString().padStart(2, '0');
                 const minutos = fecha.getMinutes().toString().padStart(2, '0');
                 const ampm = fecha.getHours() >= 12 ? 'p.m.' : 'a.m.';
-                html += `<th>${horas}:${minutos} ${ampm}</th>`;
+                html += `<th data-column="${idx + 3}">${horas}:${minutos} ${ampm}</th>`;
             });
             
             html += '</tr></thead><tbody>';
 
             selectedFile.data.forEach((persona, index) => {
-                html += '<tr>';
+                const isHabilitado = persona.estado.toLowerCase().includes('habilitado') && 
+                                     !persona.estado.toLowerCase().includes('deshabilitado');
+                
+                const rowData = {
+                    index: index + 1,
+                    identificacion: persona.identificacion,
+                    nombres: persona.nombres,
+                    status: isHabilitado ? 'habilitado' : 'deshabilitado',
+                    isNew: false
+                };
+
+                html += `<tr data-status="${rowData.status}">`;
                 html += `<td>${index + 1}</td>`;
                 html += `<td>${persona.identificacion}</td>`;
                 html += `<td style="text-align: left;">${persona.nombres}</td>`;
-                
-                const isHabilitado = persona.estado.toLowerCase().includes('habilitado') && 
-                                     !persona.estado.toLowerCase().includes('deshabilitado');
                 
                 fechas.forEach(() => {
                     if (isHabilitado) {
@@ -651,16 +820,16 @@
                 });
                 
                 html += '</tr>';
+                fullTableData.push(rowData);
             });
 
-            // Fila de totales
-            html += '<tr style="background: #667eea; color: white; font-weight: bold;">';
-            html += '<td colspan="3" style="text-align: left; padding-left: 20px;">TOTAL EN PLATAFORMA</td>';
-            
             const totalHabilitados = selectedFile.data.filter(p => 
                 p.estado.toLowerCase().includes('habilitado') && 
                 !p.estado.toLowerCase().includes('deshabilitado')
             ).length;
+            
+            html += '<tr style="background: #667eea; color: white; font-weight: bold;">';
+            html += '<td colspan="3" style="text-align: left; padding-left: 20px;">TOTAL EN PLATAFORMA</td>';
             
             fechas.forEach(() => {
                 html += `<td>${totalHabilitados}</td>`;
@@ -673,15 +842,15 @@
         }
 
         function generateFilesReport() {
-            // Obtener todas las personas únicas de todos los archivos
             const allPeople = new Map();
             
-            uploadedFiles.forEach(file => {
+            uploadedFiles.forEach((file, fileIndex) => {
                 file.data.forEach(persona => {
                     if (!allPeople.has(persona.identificacion)) {
                         allPeople.set(persona.identificacion, {
                             identificacion: persona.identificacion,
-                            nombres: persona.nombres
+                            nombres: persona.nombres,
+                            firstAppearance: fileIndex
                         });
                     }
                 });
@@ -691,12 +860,14 @@
                 a.nombres.localeCompare(b.nombres)
             );
 
+            fullTableData = [];
+
             let html = '<table><thead><tr>';
             html += '<th>#</th>';
             html += '<th>IDENTIFICACIÓN</th>';
             html += '<th>NOMBRE DEL ASPIRANTE</th>';
             
-            uploadedFiles.forEach(file => {
+            uploadedFiles.forEach((file, idx) => {
                 const fecha = file.customDate ? new Date(file.customDate) : file.date;
                 const dia = fecha.getDate().toString().padStart(2, '0');
                 const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
@@ -704,38 +875,66 @@
                 const horas = fecha.getHours().toString().padStart(2, '0');
                 const minutos = fecha.getMinutes().toString().padStart(2, '0');
                 
-                html += `<th class="file-header">${dia}/${mes}/${año}<br>${horas}:${minutos}</th>`;
+                html += `<th class="file-header" data-column="${idx + 3}">${dia}/${mes}/${año}<br>${horas}:${minutos}</th>`;
             });
             
             html += '</tr></thead><tbody>';
 
             sortedPeople.forEach((persona, index) => {
-                html += '<tr>';
+                let rowStatus = [];
+                let isNew = false;
+                
+                uploadedFiles.forEach((file, fileIndex) => {
+                    const personInFile = file.data.find(p => p.identificacion === persona.identificacion);
+                    
+                    if (personInFile) {
+                        const isHabilitado = personInFile.estado.toLowerCase().includes('habilitado') && 
+                                             !personInFile.estado.toLowerCase().includes('deshabilitado');
+                        rowStatus.push(isHabilitado ? 'habilitado' : 'deshabilitado');
+                        
+                        if (fileIndex === persona.firstAppearance && fileIndex > 0) {
+                            isNew = true;
+                        }
+                    } else {
+                        rowStatus.push('na');
+                    }
+                });
+
+                const rowData = {
+                    index: index + 1,
+                    identificacion: persona.identificacion,
+                    nombres: persona.nombres,
+                    status: rowStatus.join(','),
+                    isNew: isNew
+                };
+
+                fullTableData.push(rowData);
+
+                html += `<tr data-status="${rowData.status}" data-new="${isNew}">`;
                 html += `<td>${index + 1}</td>`;
                 html += `<td>${persona.identificacion}</td>`;
                 html += `<td style="text-align: left;">${persona.nombres}</td>`;
                 
-                uploadedFiles.forEach(file => {
+                uploadedFiles.forEach((file, fileIndex) => {
                     const personInFile = file.data.find(p => p.identificacion === persona.identificacion);
                     
                     if (personInFile) {
                         const isHabilitado = personInFile.estado.toLowerCase().includes('habilitado') && 
                                              !personInFile.estado.toLowerCase().includes('deshabilitado');
                         
-                        if (isHabilitado) {
-                            html += '<td class="habilitado status-cell">HABILITADO</td>';
-                        } else {
-                            html += '<td class="deshabilitado status-cell">DESHABILITADO</td>';
-                        }
+                        const isNewInThisFile = fileIndex === persona.firstAppearance && fileIndex > 0;
+                        const cellClass = isNewInThisFile ? 'new-person status-cell' : (isHabilitado ? 'habilitado status-cell' : 'deshabilitado status-cell');
+                        const cellText = isNewInThisFile ? 'NUEVO' : (isHabilitado ? 'HABILITADO' : 'DESHABILITADO');
+                        
+                        html += `<td class="${cellClass}">${cellText}</td>`;
                     } else {
-                        html += '<td style="background: #f0f0f0;">N/A</td>';
+                        html += '<td class="na-cell">N/A</td>';
                     }
                 });
                 
                 html += '</tr>';
             });
 
-            // Fila de totales
             html += '<tr style="background: #667eea; color: white; font-weight: bold;">';
             html += '<td colspan="3" style="text-align: left; padding-left: 20px;">TOTAL EN PLATAFORMA</td>';
             
@@ -765,6 +964,95 @@
             }
 
             return fechas;
+        }
+
+        function applyFilters() {
+            const showHabilitado = document.getElementById('filterHabilitado').checked;
+            const showDeshabilitado = document.getElementById('filterDeshabilitado').checked;
+            const showNA = document.getElementById('filterNA').checked;
+            const showNuevos = document.getElementById('filterNuevos').checked;
+
+            const rows = document.querySelectorAll('#reportPreview tbody tr:not(:last-child)');
+            
+            rows.forEach(row => {
+                const status = row.getAttribute('data-status');
+                const isNew = row.getAttribute('data-new') === 'true';
+                let shouldShow = false;
+
+                if (isNew && showNuevos) {
+                    shouldShow = true;
+                } else if (status) {
+                    if (currentMode === 'dates') {
+                        if (status === 'habilitado' && showHabilitado) shouldShow = true;
+                        if (status === 'deshabilitado' && showDeshabilitado) shouldShow = true;
+                    } else {
+                        const statuses = status.split(',');
+                        if (statuses.includes('habilitado') && showHabilitado) shouldShow = true;
+                        if (statuses.includes('deshabilitado') && showDeshabilitado) shouldShow = true;
+                        if (statuses.includes('na') && showNA) shouldShow = true;
+                    }
+                }
+
+                row.classList.toggle('hidden', !shouldShow);
+            });
+        }
+
+        function updateColumnSelector() {
+            const select = document.getElementById('columnSelect');
+            select.innerHTML = '<option value="">Selecciona una columna...</option>';
+
+            if (currentMode === 'dates') {
+                const fechaInicio = new Date(document.getElementById('fechaInicio').value);
+                const fechaFin = new Date(document.getElementById('fechaFin').value);
+                const numFechas = parseInt(document.getElementById('numFechas').value);
+                const fechas = generateDateRange(fechaInicio, fechaFin, numFechas);
+
+                fechas.forEach((fecha, idx) => {
+                    const dia = fecha.getDate().toString().padStart(2, '0');
+                    const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+                    const año = fecha.getFullYear();
+                    select.innerHTML += `<option value="${idx + 3}">${dia}/${mes}/${año}</option>`;
+                });
+            } else {
+                uploadedFiles.forEach((file, idx) => {
+                    const fecha = file.customDate ? new Date(file.customDate) : file.date;
+                    const dia = fecha.getDate().toString().padStart(2, '0');
+                    const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+                    const año = fecha.getFullYear();
+                    select.innerHTML += `<option value="${idx + 3}">${file.name} - ${dia}/${mes}/${año}</option>`;
+                });
+            }
+        }
+
+        function copySpecificColumn() {
+            const columnIndex = parseInt(document.getElementById('columnSelect').value);
+            
+            if (!columnIndex) {
+                showMessage('Por favor, selecciona una columna primero.', 'error');
+                return;
+            }
+
+            const table = document.querySelector('#reportPreview table');
+            if (!table) return;
+
+            let columnData = [];
+            const rows = table.querySelectorAll('tr');
+
+            rows.forEach((row, rowIndex) => {
+                const cells = row.querySelectorAll('th, td');
+                if (cells[columnIndex]) {
+                    columnData.push(cells[columnIndex].innerText);
+                }
+            });
+
+            const textToCopy = columnData.join('\n');
+
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                showCopyNotification();
+                showMessage(`✅ Columna copiada (${columnData.length} valores). Pégala en Excel.`, 'success');
+            }).catch(err => {
+                showMessage('Error al copiar columna. Intenta de nuevo.', 'error');
+            });
         }
 
         function downloadExcel() {
@@ -815,7 +1103,6 @@
                 return row;
             });
 
-            // Agregar fila de totales
             const totalHabilitados = selectedFile.data.filter(p => 
                 p.estado.toLowerCase().includes('habilitado') && 
                 !p.estado.toLowerCase().includes('deshabilitado')
@@ -830,9 +1117,8 @@
             const wsData = [headers1, headers2, ...rows];
             const ws = XLSX.utils.aoa_to_sheet(wsData);
             
-            // Aplicar colores a las celdas
             const range = XLSX.utils.decode_range(ws['!ref']);
-            for (let R = 2; R <= range.e.r - 1; R++) { // -1 para no incluir la fila de totales
+            for (let R = 2; R <= range.e.r - 1; R++) {
                 for (let C = 3; C <= range.e.c; C++) {
                     const cellAddress = XLSX.utils.encode_cell({r: R, c: C});
                     if (!ws[cellAddress]) continue;
@@ -856,7 +1142,6 @@
                 }
             }
 
-            // Aplicar formato a la fila de totales
             const totalRowIndex = range.e.r;
             for (let C = 0; C <= range.e.c; C++) {
                 const cellAddress = XLSX.utils.encode_cell({r: totalRowIndex, c: C});
@@ -881,12 +1166,13 @@
         function downloadFilesExcel() {
             const allPeople = new Map();
             
-            uploadedFiles.forEach(file => {
+            uploadedFiles.forEach((file, fileIndex) => {
                 file.data.forEach(persona => {
                     if (!allPeople.has(persona.identificacion)) {
                         allPeople.set(persona.identificacion, {
                             identificacion: persona.identificacion,
-                            nombres: persona.nombres
+                            nombres: persona.nombres,
+                            firstAppearance: fileIndex
                         });
                     }
                 });
@@ -916,13 +1202,14 @@
                     persona.nombres
                 ];
                 
-                uploadedFiles.forEach(file => {
+                uploadedFiles.forEach((file, fileIndex) => {
                     const personInFile = file.data.find(p => p.identificacion === persona.identificacion);
                     
                     if (personInFile) {
                         const isHabilitado = personInFile.estado.toLowerCase().includes('habilitado') && 
                                              !personInFile.estado.toLowerCase().includes('deshabilitado');
-                        row.push(isHabilitado ? 'HABILITADO' : 'DESHABILITADO');
+                        const isNewInFile = fileIndex === persona.firstAppearance && fileIndex > 0;
+                        row.push(isNewInFile ? 'NUEVO' : (isHabilitado ? 'HABILITADO' : 'DESHABILITADO'));
                     } else {
                         row.push('N/A');
                     }
@@ -931,7 +1218,6 @@
                 return row;
             });
 
-            // Agregar fila de totales
             const totalRow = ['', '', 'TOTAL EN PLATAFORMA'];
             uploadedFiles.forEach(file => {
                 const habilitadosCount = file.data.filter(p => 
@@ -945,9 +1231,8 @@
             const wsData = [headers, ...rows];
             const ws = XLSX.utils.aoa_to_sheet(wsData);
             
-            // Aplicar colores a las celdas en modo archivos
             const range = XLSX.utils.decode_range(ws['!ref']);
-            for (let R = 1; R <= range.e.r - 1; R++) { // -1 para no incluir la fila de totales
+            for (let R = 1; R <= range.e.r - 1; R++) {
                 for (let C = 3; C <= range.e.c; C++) {
                     const cellAddress = XLSX.utils.encode_cell({r: R, c: C});
                     if (!ws[cellAddress]) continue;
@@ -972,13 +1257,21 @@
                     } else if (cellValue === 'N/A') {
                         ws[cellAddress].s.fill = {
                             patternType: 'solid',
-                            fgColor: { rgb: 'F0F0F0' }
+                            fgColor: { rgb: 'FFC107' }
+                        };
+                    } else if (cellValue === 'NUEVO') {
+                        ws[cellAddress].s.fill = {
+                            patternType: 'solid',
+                            fgColor: { rgb: '4CAF50' }
+                        };
+                        ws[cellAddress].s.font = {
+                            color: { rgb: 'FFFFFF' },
+                            bold: true
                         };
                     }
                 }
             }
 
-            // Aplicar formato a la fila de totales
             const totalRowIndex = range.e.r;
             for (let C = 0; C <= range.e.c; C++) {
                 const cellAddress = XLSX.utils.encode_cell({r: totalRowIndex, c: C});
@@ -1003,11 +1296,13 @@
         function clearAll() {
             if (confirm('¿Estás seguro de que deseas limpiar todos los archivos y el informe?')) {
                 uploadedFiles = [];
+                fullTableData = [];
                 updateFilesList();
                 document.getElementById('configSection').style.display = 'none';
                 document.getElementById('reportPreview').innerHTML = '';
                 document.getElementById('downloadBtn').style.display = 'none';
                 document.getElementById('copyBtn').style.display = 'none';
+                document.getElementById('filtersSection').style.display = 'none';
                 document.getElementById('messageArea').innerHTML = '';
                 showMessage('✅ Todo limpiado correctamente.', 'success');
             }
@@ -1020,22 +1315,15 @@
                 return;
             }
 
-            // Crear un rango de selección
             const range = document.createRange();
             range.selectNode(table);
             
-            // Limpiar selección previa y agregar la nueva
             window.getSelection().removeAllRanges();
             window.getSelection().addRange(range);
 
             try {
-                // Copiar con formato
                 document.execCommand('copy');
-                
-                // Mostrar notificación
                 showCopyNotification();
-                
-                // Limpiar selección
                 window.getSelection().removeAllRanges();
                 
                 showMessage('✅ Tabla copiada al portapapeles con formato. Pégala en Excel, Word o Google Sheets.', 'success');
@@ -1062,6 +1350,6 @@
                             type === 'success' ? 'success-message' : 'info-message';
             messageArea.innerHTML = `<div class="${className}">${text}</div>`;
         }
-</script>
+    </script>
 </body>
 </html>
